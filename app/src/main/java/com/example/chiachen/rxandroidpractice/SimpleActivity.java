@@ -38,21 +38,21 @@ public class SimpleActivity extends AppCompatActivity {
 		//============
 		rx.Observable<String> obShow = rx.Observable.just(getName());
 		obShow.observeOn(AndroidSchedulers.mainThread()).
-				map(mUpperLetterFunc).
+				map(String::toUpperCase).
 				subscribe(mLogAction);
 
 		//============
 		rx.Observable<String> obMap = rx.Observable.from(mManyWords);
 		obMap.observeOn(AndroidSchedulers.mainThread()).
-				map(mUpperLetterFunc).
-				subscribe(mLogAction);
+				map(String::toUpperCase).
+				subscribe(mTitle::setText);
 
 		//============
 		rx.Observable.just(mManyWordsList)
 				.observeOn(AndroidSchedulers.mainThread())
-				.flatMap(mOneLetterFunc)
-				.reduce(mMergeStringFunc)
-				.subscribe(mLogAction);
+				.flatMap(Observable::from)
+				.reduce(this::mergeStrings)
+				.subscribe(this::showToast);
 		//============
 	}
 
@@ -60,23 +60,13 @@ public class SimpleActivity extends AppCompatActivity {
 		return "im jason";
 	}
 
-	// string -> upper case
-	private Func1<String, String> mUpperLetterFunc = String::toUpperCase;
+	private String mergeStrings(String s, String s2) {
+		return String.format("%s %s", s, s2);
+	}
 
-	// mapping func
-	private Func1<List<String>, Observable<String>> mOneLetterFunc = Observable::from;
-
-
-	private Func2<String, String, String> mMergeStringFunc = (s, s2) -> String.format("%s %s", s, s2);
-
-	// Shoe toast
-	private Action1<String> mToastAction = string -> {
+	private void showToast(String string){
 		Toast.makeText(SimpleActivity.this, string, Toast.LENGTH_SHORT).show();
-	};
-
-	private Action1<String> mChangeTextAction = s -> {
-		mTitle.setText(s);
-	};
+	}
 
 	private Action1<String> mLogAction = string -> {
 		Log.e(TAG, "eeeeeee  "+string);
