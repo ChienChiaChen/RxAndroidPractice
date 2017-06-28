@@ -39,7 +39,7 @@ public class SimpleActivity extends AppCompatActivity {
 		rx.Observable<String> obShow = rx.Observable.just(getName());
 		obShow.observeOn(AndroidSchedulers.mainThread()).
 				map(mUpperLetterFunc).
-				subscribe(mToastAction);
+				subscribe(mLogAction);
 
 		//============
 		rx.Observable<String> obMap = rx.Observable.from(mManyWords);
@@ -61,22 +61,13 @@ public class SimpleActivity extends AppCompatActivity {
 	}
 
 	// string -> upper case
-	private Func1<String, String> mUpperLetterFunc = string -> {
-		return string.toUpperCase(); // 大小字母
-	};
+	private Func1<String, String> mUpperLetterFunc = String::toUpperCase;
 
 	// mapping func
-	private Func1<List<String>, Observable<String>> mOneLetterFunc = strings -> {
-		return Observable.from(strings);
-	};
+	private Func1<List<String>, Observable<String>> mOneLetterFunc = Observable::from;
 
 
-	private Func2<String, String, String> mMergeStringFunc = new Func2<String, String, String>() {
-		@Override
-		public String call(String s, String s2) {
-			return String.format("%s %s", s, s2);
-		}
-	};
+	private Func2<String, String, String> mMergeStringFunc = (s, s2) -> String.format("%s %s", s, s2);
 
 	// Shoe toast
 	private Action1<String> mToastAction = string -> {
