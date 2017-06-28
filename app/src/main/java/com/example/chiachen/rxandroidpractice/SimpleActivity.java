@@ -8,12 +8,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 
 /**
@@ -25,7 +28,7 @@ public class SimpleActivity extends AppCompatActivity {
 	@BindView(R.id.title_simple) TextView mTitle;
 
 	final String mManyWords[] = {"Tommy", "jason", "bear", "jimmy", "weting", "wade"};
-	final ArrayList<String> mManyWordsList = new ArrayList<>(Arrays.asList(mManyWords));
+	final List<String> mManyWordsList = Arrays.asList(mManyWords);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +40,20 @@ public class SimpleActivity extends AppCompatActivity {
 		obShow.observeOn(AndroidSchedulers.mainThread()).
 				map(mUpperLetterFunc).
 				subscribe(mToastAction);
-		//============
 
+		//============
 		rx.Observable<String> obMap = rx.Observable.from(mManyWords);
 		obMap.observeOn(AndroidSchedulers.mainThread()).
 				map(mUpperLetterFunc).
 				subscribe(mLogAction);
 
+		//============
+		rx.Observable.just(mManyWordsList)
+				.observeOn(AndroidSchedulers.mainThread())
+				.flatMap(mOneLetterFunc)
+				.reduce(mMergeStringFunc)
+				.subscribe(mLogAction);
+		//============
 	}
 
 	public String getName(){
@@ -53,6 +63,19 @@ public class SimpleActivity extends AppCompatActivity {
 	// string -> upper case
 	private Func1<String, String> mUpperLetterFunc = string -> {
 		return string.toUpperCase(); // 大小字母
+	};
+
+	// mapping func
+	private Func1<List<String>, Observable<String>> mOneLetterFunc = strings -> {
+		return Observable.from(strings);
+	};
+
+
+	private Func2<String, String, String> mMergeStringFunc = new Func2<String, String, String>() {
+		@Override
+		public String call(String s, String s2) {
+			return String.format("%s %s", s, s2);
+		}
 	};
 
 	// Shoe toast
