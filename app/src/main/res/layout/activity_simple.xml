@@ -16,4 +16,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"/>
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@mipmap/baseball"
+        android:id="@+id/imageView"
+        android:background="@color/colorAccent"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        />
 </RelativeLayout>
