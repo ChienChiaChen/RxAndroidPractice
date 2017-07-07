@@ -14,8 +14,11 @@ public class Tool {
 	public static void tag(String tag){
 		Log.e(TOOL, tag);
 	}
+	public static void tag(int tag){
+		Log.e(TOOL, String.valueOf(tag));
+	}
 	
-	private static void showToast(Context context,String string){
+	public static void showToast(Context context, String string) {
 		Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
 	}
 }

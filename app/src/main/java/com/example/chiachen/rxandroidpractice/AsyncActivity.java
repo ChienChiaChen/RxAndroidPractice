@@ -72,22 +72,24 @@ public class AsyncActivity extends AppCompatActivity {
 				// mRxBtn.setEnabled(false);
 				// observable.subscribe(subscriber);
 				
-				createObserver().subscribe(new Subscriber<Integer>() {
-					@Override
-					public void onCompleted() {
-						Tool.tag("onCompleted");
-					}
-					
-					@Override
-					public void onError(Throwable e) {
-						Tool.tag("onError  "+e.toString());
-					}
-					
-					@Override
-					public void onNext(Integer integer) {
-						Tool.tag("onNext "+integer);
-					}
-				});
+				// createObserver().subscribe(new Subscriber<Integer>() {
+				// 	@Override
+				// 	public void onCompleted() {
+				// 		Tool.tag("onCompleted");
+				// 	}
+				//
+				// 	@Override
+				// 	public void onError(Throwable e) {
+				// 		Tool.tag("onError  "+e.toString());
+				// 	}
+				//
+				// 	@Override
+				// 	public void onNext(Integer integer) {
+				// 		Tool.tag("onNext "+integer);
+				// 	}
+				// });
+				
+				rangeObserver().subscribe(integer -> {Tool.tag(integer);});
 			}
 		}
 	}
@@ -119,5 +121,9 @@ public class AsyncActivity extends AppCompatActivity {
 				}
 			}
 		});
+	}
+	
+	private Observable<Integer> rangeObserver() {
+		return Observable.range(10, 5);
 	}
 }
